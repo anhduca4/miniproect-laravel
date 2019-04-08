@@ -1,0 +1,384 @@
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get list users
+      description: Get list users
+
+      produces:
+      - application/json
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Limit of filter
+      responses:
+        200:
+          description: Success get users
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Users"
+    post:
+      tags:
+        - users
+      summary: Create user
+      description: Create user
+      produces:
+      - application/json
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserStore'
+      responses:
+        200:
+          description: Success create user
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/User"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Get user info
+      description: Get user info
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+          description: Id of user
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success get users
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/User"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+    put:
+      tags:
+        - users
+      summary: Update user info
+      description: Update user info
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+          description: Id of user
+      produces:
+      - application/json
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        200:
+          description: Success update user
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/User"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      tags:
+        - users
+      summary: Delete user
+      description: Delete user
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+          description: Id of user
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success delete user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: boolean
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        errors:
+          type: boolean
+        data:
+          type: object
+          properties:
+            data:
+              properties:
+              type: array
+              items:
+                $ref: '#/definitions/User'
+            current_page:
+              type: number
+            from:
+              type: number
+            last_page:
+              type: number
+            per_page:
+              type: number
+            to:
+              type: number
+            total:
+              type: number
+    User:
+      type: object
+      properties:
+        errors:
+          type: boolean
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/definitions/User'
+    UserStore:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: password
+        name:
+          type: string
+          description: Name of user
+        email:
+          type: string
+          description: Email of user
+        birth_day:
+          type: string
+          description: Birth day of user (YYYY-MM-DD)
+        address:
+          type: string
+          description: Address of user
+        phone_number:
+          type: string
+          description: Phone number of user
+      required:
+        - username
+        - password
+        - name
+        - email
+        - birth_day
+        - address
+        - phone_number
+    UserUpdate:
+      type: object
+      properties:
+        password:
+          type: string
+          description: password
+        name:
+          type: string
+          description: Name of user
+        birth_day:
+          type: string
+          description: Birth day of user (YYYY-MM-DD)
+        address:
+          type: string
+          description: Address of user
+      required:
+        - password
+        - name
+        - birth_day
+        - address
+  # /auth/me:
+  #   get:
+  #     security:
+  #       - bearerAuth: []
+  #     tags:
+  #       - auth
+  #     summary: Get curent user info
+  #     description: Get current user info
+  #    produces:
+  #    - application/json
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#components/schemas/UserMe"
+  #      401:
+  #        description: Unauthorized
+  #        content:
+  #          application/json:
+  #            schema:
+  #              $ref: '#/components/responses/UnauthorizedError'
+  # /auth/update:
+  #   put:
+  #     security:
+  #       - bearerAuth: []
+  #     tags:
+  #       - auth
+  #     summary: Update curent user info
+  #     description: Update current user info
+  #     produces:
+  #     - application/json
+  #     requestBody:
+  #       description: Optional description in *Markdown*
+  #       required: true
+  #       content:
+  #         application/x-www-form-urlencoded:
+  #           schema:
+  #             $ref: '#/components/schemas/AuthUpdate'
+  #         text/plain:
+  #           schema:
+  #             type: string
+  #     responses:
+  #       200:
+  #         description: Success login
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#components/schemas/UserAuth"
+# components:
+#   schemas:
+#     UserAuth:
+#       type: object
+#       properties:
+#         errors:
+#           type: boolean
+#         data:
+#           type: object
+#           properties:
+#             user:
+#               $ref: '#/definitions/User'
+#             token:
+#               type: object
+#               properties:
+#                 token_type:
+#                   type: string
+#                 expires_in:
+#                   type: number
+#                 access_token:
+#                   type: string
+#                 refresh_token:
+#                   type: string
+#     UserMe:
+#       type: object
+#       properties:
+#         errors:
+#           type: boolean
+#         data:
+#           type: object
+#           properties:
+#             user:
+#               $ref: '#/definitions/User'
+#     AuthLogin:
+#       type: object
+#       properties:
+#         username:
+#           type: string
+#           description: Username or email or phone
+#         password:
+#           type: string
+#           description: password
+#         client_id:
+#           type: string
+#           description: client id of laravel passport
+#         client_secret:
+#           type: string
+#           description: client secret of laravel passport
+#       required:
+#         - username
+#         - password
+#         - client_id
+#         - client_secret
+#     AuthUpdate:
+#       type: object
+#       properties:
+#         birth_day:
+#           type: string
+#           description: Birth day (YYYY-MM-DD)
+#         name:
+#           type: string
+#           description: Name of user
+#         address:
+#           type: string
+#           description: Address of user
+#         phone_number:
+#           type: string
+#           description: Phone number of user
+# definitions:
+#   User:
+#     properties:
+#       id:
+#         type: number
+#       avatar:
+#         type: string
+#       username:
+#         type: string
+#       birth_day:
+#         type: string
+#       name:
+#         type: string
+#       email:
+#         type: string
+#       address:
+#         type: string
+#       phone_number:
+#         type: string
+#       role:
+#         type: string
+#       status:
+#         type: string
+#       fb_id:
+#         type: string
+#       gg_id:
+#         type: string
+#       created_at:
+#         type: string
+#       updated_at:
+#         type: string
+#       country_code:
+#         type: string
